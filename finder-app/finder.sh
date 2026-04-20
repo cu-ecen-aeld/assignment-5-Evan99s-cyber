@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [$# -ne 2]; then
+if [ $# -ne 2 ]; then
 	echo "Error: L1"
 	exit 1
 fi
@@ -8,7 +8,7 @@ fi
 filesdir="$1"
 searchstr="$2"
 
-if [! -d "$filesdir"]; then
+if [ ! -d "$filesdir" ]; then
         echo "Error: L2"
         exit 1
 fi
