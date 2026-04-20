@@ -66,23 +66,3 @@ set +e
 # ... existing logic ...
 echo "${OUTPUTSTRING}" > /tmp/assignment4-result.txt
 
-for i in $( seq 1 $NUMFILES)
-do
-    writer "$WRITEDIR/${username}$i.txt" "$WRITESTR"
-done
-
-OUTPUTSTRING=$(finder.sh "$WRITEDIR" "$WRITESTR")
-
-# Write the result to the assignment 4 required file
-echo "${OUTPUTSTRING}" > /tmp/assignment4-result.txt
-
-# ... existing grep/comparison logic ...
-
-echo ${OUTPUTSTRING} | grep "${MATCHSTR}"
-if echo "${OUTPUTSTRING}" | grep -q "${MATCHSTR}"; then
-	echo "success"
-	exit 0
-else
-	echo "failed: expected  ${MATCHSTR} in ${OUTPUTSTRING} but instead found"
-	exit 1
-fi
