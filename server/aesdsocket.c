@@ -77,6 +77,28 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
+// Insert this between lines 78 and 80
+    if (argc > 1 && strcmp(argv[1], "-d") == 0) {
+        pid_t pid = fork();
+        if (pid < 0) {
+            syslog(LOG_ERR, "Fork failed");
+            return -1;
+        }
+        if (pid > 0) {
+            // Parent exits to return control to shell/GitHub runner
+            exit(0);
+        }
+        // Child continues - redirect standard streams
+        if (setsid() < 0) return -1;
+        if (chdir("/") < 0) return -1;
+        
+        int dev_null = open("/dev/null", O_RDWR);
+        dup2(dev_null, STDIN_FILENO);
+        dup2(dev_null, STDOUT_FILENO);
+        dup2(dev_null, STDERR_FILENO);
+        close(dev_null);
+    }
+
     while (1) {
         struct sockaddr_in client_addr;
         socklen_t client_len = sizeof(client_addr);
