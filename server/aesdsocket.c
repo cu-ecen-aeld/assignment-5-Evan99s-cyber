@@ -46,6 +46,21 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
+    // Inside main, before socket setup:
+int daemon_mode = 0;
+if (argc > 1 && strcmp(argv[1], "-d") == 0) {
+    daemon_mode = 1;
+}
+
+// ... setup socket, bind, and listen FIRST ...
+
+if (daemon_mode) {
+    if (daemon(0, 0) == -1) {
+        syslog(LOG_ERR, "Failed to enter daemon mode");
+        return -1;
+    }
+}
+
     // 1. Create Socket
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd == -1) {
@@ -138,6 +153,14 @@ int main(int argc, char *argv[]) {
                 break; 
             }
         }
+
+        while ((bytes_recv = recv(client_fd, buffer, BUFFER_SIZE, 0)) > 0) {
+    fwrite(buffer, 1, bytes_recv, fp);
+    if (memchr(buffer, '\n', bytes_recv)) {
+        fflush(fp); // CRITICAL: Force the data onto the disk
+        break; 
+    }
+}
         
         // 5. Send full file content back to client
         fseek(fp, 0, SEEK_SET);
