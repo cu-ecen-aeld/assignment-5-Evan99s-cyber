@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# This script manages the aesdsocket daemon
+# It must be installed to /etc/init.d/S99aesdsocket in the target rootfs
+
+case "$1" in
+    start)
+        echo "Starting aesdsocket"
+        # Ensure the binary is actually there
+        if [ ! -x /usr/bin/aesdsocket ]; then
+            echo "Error: /usr/bin/aesdsocket not found"
+            exit 1
+        fi
+        # Start as a daemon. 
+        # Note: Your C code must handle the -d flag!
+        start-stop-daemon -S -n aesdsocket -a /usr/bin/aesdsocket -- -d
+        ;;
+    stop)
+        echo "Stopping aesdsocket"
+        start-stop-daemon -K -n aesdsocket
+        ;;
+    *)
+        echo "Usage: $0 {start|stop}"
+        exit 1
+esac
