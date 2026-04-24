@@ -11,6 +11,7 @@
 #include <fcntl.h>
 #include <errno.h>
 
+// Testing
 // The autotester prefers this path in Yocto
 #define DATA_FILE "/var/run/aesdsocketdata"
 #define BUFFER_SIZE 1024
